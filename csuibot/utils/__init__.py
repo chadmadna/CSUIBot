@@ -26,15 +26,14 @@ def lookup_chinese_zodiac(year):
     zodiacs = {
         0: 'rat',
         1: 'buffalo',
+        2: 'tiger',
         4: 'dragon',
         5: 'snake',
         6: 'horse',
         7: 'goat',
         8: 'monkey'
     }
-
     ix = (year - 4) % num_zodiacs
-
     try:
         return zodiacs[ix]
     except KeyError:

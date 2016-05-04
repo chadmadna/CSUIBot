@@ -21,11 +21,13 @@ def lookup_zodiac(month, day):
 
 def lookup_chinese_zodiac(year):
     num_zodiacs = 12
+
     zodiacs = {
         0: 'rat',
         1: 'buffalo',
         4: 'dragon',
         5: 'snake',
+        6: 'horse',
         7: 'goat',
         8: 'monkey'
     }

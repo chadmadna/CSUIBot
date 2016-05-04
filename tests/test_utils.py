@@ -143,6 +143,10 @@ class TestChineseZodiac:
         years = [2003, 1991, 1979, 1967, 2015, 2027]
         self.run_test('goat', years)
 
+    def test_monkey(self):
+        years = [2004, 1992, 1980, 1968, 2016, 2028]
+        self.run_test('monkey', years)
+
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)

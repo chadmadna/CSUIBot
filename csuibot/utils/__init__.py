@@ -26,7 +26,8 @@ def lookup_chinese_zodiac(year):
         1: 'buffalo',
         4: 'dragon',
         5: 'snake',
-        7: 'goat'
+        7: 'goat',
+        8: 'monkey'
     }
 
     ix = (year - 4) % num_zodiacs

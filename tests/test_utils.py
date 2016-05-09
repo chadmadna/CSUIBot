@@ -115,6 +115,22 @@ class TestZodiac:
         res = utils.lookup_zodiac(11, 27)
         assert res != 'scorpio'
 
+    def test_libra_lower_bound(self):
+        res = utils.lookup_zodiac(9, 23)
+        assert res == 'libra'
+
+    def test_libra_upper_bound(self):
+        res = utils.lookup_zodiac(10, 22)
+        assert res == 'libra'
+
+    def test_libra_in_between(self):
+        res = utils.lookup_zodiac(10, 10)
+        assert res == 'libra'
+
+    def test_not_libra(self):
+        res = utils.lookup_zodiac(11, 17)
+        assert res != 'libra'
+
 
 class TestChineseZodiac:
 

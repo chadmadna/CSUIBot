@@ -3,6 +3,21 @@ from csuibot.utils import word
 
 
 class TestZodiac:
+    def test_taurus_lower_bound(self):
+        res = utils.lookup_zodiac(4, 20)
+        assert res == 'taurus'
+
+    def test_taurus_upper_bound(self):
+        res = utils.lookup_zodiac(5, 20)
+        assert res == 'taurus'
+
+    def test_taurus_in_between(self):
+        res = utils.lookup_zodiac(4, 30)
+        assert res == 'taurus'
+
+    def test_not_taurus(self):
+        res = utils.lookup_zodiac(11, 17)
+        assert res != 'taurus'
 
     def test_aries_lower_bound(self):
         res = utils.lookup_zodiac(3, 21)

@@ -592,3 +592,22 @@ class TestCognitiveNews:
         res = MagicMock(utils.search_news("Lorem Ipsum"), return_value=fake_dict)
         res("Lorem Ipsum")
         res.assert_called_with("Lorem Ipsum")
+
+
+class TestXkcd:
+
+    def test_xkcd(self, mocker):
+        fake_dict = {
+            'safe_title': 'title',
+            'num': 12,
+            'alt': 'alttext',
+            'img': 'imgurl.com/test.png'
+        }
+        config = {'json.return_value': fake_dict}
+        fake_obj = mocker.Mock()
+        fake_json = mocker.PropertyMock(return_value='thisthing')
+        type(fake_obj).json = fake_json
+        mocker.patch('requests.get', **config)
+        mocker.patch('json.loads', return_value=fake_dict)
+        res = utils.last_xkcd()
+        assert type(res) == list

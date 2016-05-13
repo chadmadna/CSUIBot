@@ -1,3 +1,4 @@
+import requests
 from csuibot.utils import zodiac as z
 from csuibot.utils import kbbi as k
 from csuibot.utils import boardgame as b
@@ -7,7 +8,6 @@ from csuibot.utils import visualfeatures as v
 from csuibot.utils import sound as s
 from csuibot.utils import cognitive_news as news
 from csuibot import app
-import requests
 
 
 def lyric_search(lyrics):
@@ -171,3 +171,13 @@ def process_search(response):
         message += i["name"] + "\n\n" + i["description"] + "\n\n"
         message += "Read more here: " + i["url"] + "\n\n"
     return message
+
+
+def last_xkcd():
+    url = 'http://xkcd.com/info.0.json'
+    req = requests.get(url).json()
+    result = req
+    output = ["{} - {}\nAlt-text:{}\n".format(
+        result['safe_title'], result['num'], result['alt']),
+        result['img']]
+    return output

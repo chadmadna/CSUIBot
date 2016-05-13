@@ -1,4 +1,5 @@
 import re
+import requests
 import operator
 from time import gmtime, mktime
 from datetime import datetime
@@ -8,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
                     generate_chant, lyric_search, lookup_plants_trivia,
                     lookup_definisi, get_visual_features, lookup_sound,
-                    search_news, process_search)
+                    search_news, process_search, last_xkcd)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -114,6 +115,20 @@ def yelfasilkom(message):
         "* : Diikuti dengan gerakan menghentakkan kaki\n"
     )
     bot.reply_to(message, yelfslkm_text)
+
+
+@bot.message_handler(commands=['xkcd'])
+def xkcd(message):
+    app.logger.debug("'xkcd' command detected")
+    result = last_xkcd()
+    image = requests.get(result[-1], stream=True)
+    with open("lastxkcd.png", 'wb') as fd:
+        for chunk in image.iter_content(8):
+            fd.write(chunk)
+    image_cache = open("lastxkcd.png", "rb")
+    bot.send_photo(message.chat.id, image_cache)
+    image_cache.close()
+    bot.send_message(message.chat.id, result[0])
 
 
 @bot.message_handler(func=_is_compute_command)

@@ -2,8 +2,8 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               board, definition, synonym, antonym, hex2rgb,
                               date, time, chant, top_posters, get_messages,
-                              message_dic, total_messages, lyricsearch)
-
+                              message_dic, total_messages, lyricsearch,
+                              plants)
 from datetime import datetime
 
 
@@ -248,3 +248,14 @@ def test_chant(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_chant
+
+
+def test_plants(mocker):
+    fake_trivia = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_plants_trivia', return_value=fake_trivia)
+    mock_message = Mock(text='/plants')
+    plants(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_trivia

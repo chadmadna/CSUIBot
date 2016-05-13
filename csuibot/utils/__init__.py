@@ -1,6 +1,7 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import boardgame as b
 from csuibot.utils import word as w
+from csuibot.utils import plants as p
 from csuibot import app
 import requests
 
@@ -98,3 +99,8 @@ def lookup_hex_to_rgb(value):
 
 def generate_chant():
     return "Viva, Viva, Viva Fasilkom!"
+
+
+def lookup_plants_trivia(plants_facts=None):
+    result = p.Plants(plants_facts)
+    return result.facts()

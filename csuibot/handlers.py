@@ -6,7 +6,7 @@ from collections import defaultdict
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
-                    generate_chant, lyric_search)
+                    generate_chant, lyric_search, lookup_plants_trivia)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -184,6 +184,12 @@ def shio(message):
     year, _, _ = _parse_date(date_str)
     app.logger.debug('year = {}'.format(year))
     bot.reply_to(message, lookup_chinese_zodiac(year))
+
+
+@bot.message_handler(commands=['plants'])
+def plants(message):
+    app.logger.debug("'plants' command detected")
+    bot.reply_to(message, lookup_plants_trivia())
 
 
 @bot.message_handler(func=_is_board_command)

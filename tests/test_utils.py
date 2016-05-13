@@ -341,3 +341,18 @@ class TestChant:
     def test_chant(self):
         res = "Viva, Viva, Viva Fasilkom!"
         assert utils.generate_chant() == res
+
+
+class TestPlants:
+
+    def test_plants_trivia(self):
+        res = utils.lookup_plants_trivia(['Dandellions are yellow'])
+        assert res == 'Dandellions are yellow'
+
+    def test_plants_trivia_file(self):
+        res = utils.lookup_plants_trivia()
+        compare = open(
+            'assets/plants_trivia.txt',
+            'r', encoding='utf-8-sig').readlines()
+        compare = [lines.strip() for lines in compare]
+        assert res in compare

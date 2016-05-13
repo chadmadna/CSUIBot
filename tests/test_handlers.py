@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, compute
 
 
 def test_help(mocker):
@@ -38,11 +38,14 @@ def test_shio(mocker):
     assert args[1] == fake_shio
 
 #TODO
-def test_math(mocker):
-    fake_math = 'foo bar'
+def test_compute(mocker):
+    fake_compute = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text=/'compute 5+6*3')
-    math(mock_message)
-    pass
+    mock_message = Mock(text='/compute aa+bb')
+    res = compute(mock_message)
+    if res != 'ERROR':
+        raise AssertionError("Wrong Result")    
+    
+    
     
     

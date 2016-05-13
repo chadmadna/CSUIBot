@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, board
+from csuibot.handlers import help, zodiac, shio, board, definition, synonym, antonym
 
 
 def test_help(mocker):
@@ -47,3 +47,36 @@ def test_board(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_board
+
+
+def test_definition(mocker):
+    fake_definition = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_word', return_value=fake_definition)
+    mock_message = Mock(text='/definition test')
+    definition(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_definition
+
+
+def test_synonym(mocker):
+    fake_synonym = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_word', return_value=fake_synonym)
+    mock_message = Mock(text='/synonym test')
+    synonym(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_synonym
+
+
+def test_antonym(mocker):
+    fake_antonym = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_word', return_value=fake_antonym)
+    mock_message = Mock(text='/antonym test')
+    antonym(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_antonym

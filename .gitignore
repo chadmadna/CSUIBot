@@ -67,3 +67,5 @@ tags
 
 # OSX stuff
 .DS_Store
+
+.idea/

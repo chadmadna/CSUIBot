@@ -1,7 +1,8 @@
 import re
 
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, draw_board, draw_empty_board
+from .utils import lookup_zodiac, lookup_chinese_zodiac, draw_board, \
+    draw_empty_board, lookup_word
 
 
 @bot.message_handler(commands=['about'])
@@ -26,6 +27,21 @@ def _is_shio_command(message):
 
 def _is_board_command(message):
     regexp = r'/board( [a-z]+)?'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_definition_command(message):
+    regexp = r'/definition \S+$'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_synonym_command(message):
+    regexp = r'/synonym \S+$'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_antonym_command(message):
+    regexp = r'/antonym \S+$'
     return re.match(regexp, message.text) is not None
 
 
@@ -62,3 +78,33 @@ def board(message):
 
 def _parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(func=_is_definition_command)
+def definition(message):
+    app.logger.debug("'definition' command detected")
+    action_str, word_str = _parse_word(message.text)
+    app.logger.debug('action = {}, word = {}'.format(action_str, word_str))
+    bot.reply_to(message, lookup_word(action_str, word_str))
+
+
+@bot.message_handler(func=_is_synonym_command)
+def synonym(message):
+    app.logger.debug("'synonym' command detected")
+    action_str, word_str = _parse_word(message.text)
+    app.logger.debug('action = {}, word = {}'.format(action_str, word_str))
+    bot.reply_to(message, lookup_word(action_str, word_str))
+
+
+@bot.message_handler(func=_is_antonym_command)
+def antonym(message):
+    app.logger.debug("'antonym' command detected")
+    action_str, word_str = _parse_word(message.text)
+    app.logger.debug('action = {}, word = {}'.format(action_str, word_str))
+    bot.reply_to(message, lookup_word(action_str, word_str))
+
+
+def _parse_word(text):
+    """Return first word if input contains multiple words."""
+    ret = text[1:].split(' ')
+    return ret[:2] if len(ret) > 2 else ret

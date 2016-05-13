@@ -10,6 +10,7 @@ mccabe==0.3.1
 pep8==1.5.7
 pep8-naming==0.3.3
 py==1.4.30
+PyDictionary==1.5.2
 pyflakes==0.8.1
 pyTelegramBotAPI==1.4.2
 pytest==2.8.0

@@ -1,4 +1,7 @@
+from unittest.mock import patch
+
 from csuibot import utils
+from csuibot.utils import word
 
 
 class TestZodiac:
@@ -219,3 +222,60 @@ class TestBoardGame:
                  "\u2b1c\u2b1c\u2b1c\u26ab\u26aa\u2b1c\u2b1c\u2b1c\n"
 
         assert utils.draw_board("reversi") == empty + center + empty
+
+
+class TestWord:
+
+    def test_definition(self):
+        def new_init(self, word):
+            self.name = 'definition'
+            self.mean = {'foo': ['bar']}
+            self.find = self.lookup()
+
+        with patch.object(word.Definition, '__init__', new_init):
+            assert utils.lookup_word('definition', 'test') == 'foo\n1. bar\n\n'
+
+    def test_definition_not_found(self):
+        def new_init(self, word):
+            self.name = 'definition'
+            self.mean = None
+            self.find = self.lookup()
+
+        with patch.object(word.Definition, '__init__', new_init):
+            assert utils.lookup_word('definition', 'test') == 'Invalid word'
+
+    def test_synonym(self):
+        def new_init(self, word):
+            self.name = 'synonym'
+            self.mean = ['foo', 'bar']
+            self.find = self.lookup()
+
+        with patch.object(word.Synonym, '__init__', new_init):
+            assert utils.lookup_word('synonym', 'test') == 'foo bar '
+
+    def test_synonym_not_found(self):
+        def new_init(self, word):
+            self.name = 'synonym'
+            self.mean = None
+            self.find = self.lookup()
+
+        with patch.object(word.Synonym, '__init__', new_init):
+            assert utils.lookup_word('synonym', 'test') == 'Invalid word'
+
+    def test_antonym(self):
+        def new_init(self, word):
+            self.name = 'antonym'
+            self.mean = ['foo', 'bar']
+            self.find = self.lookup()
+
+        with patch.object(word.Antonym, '__init__', new_init):
+            assert utils.lookup_word('antonym', 'test') == 'foo bar '
+
+    def test_antonym_not_found(self):
+        def new_init(self, word):
+            self.name = 'antonym'
+            self.mean = None
+            self.find = self.lookup()
+
+        with patch.object(word.Antonym, '__init__', new_init):
+            assert utils.lookup_word('antonym', 'test') == 'Invalid word'

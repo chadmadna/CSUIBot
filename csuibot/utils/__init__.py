@@ -1,5 +1,6 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import boardgame as b
+from csuibot.utils import word as w
 
 
 def lookup_zodiac(month, day):
@@ -56,3 +57,15 @@ def draw_board(game):
 
 def draw_empty_board():
     return str(b.AbstractBoard())
+
+
+def lookup_word(action, word):
+    searches = [
+        w.Definition(word),
+        w.Synonym(word),
+        w.Antonym(word)
+    ]
+
+    for search in searches:
+        if search.name == action:
+            return search.find

@@ -36,3 +36,13 @@ def test_shio(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_shio
+
+#TODO
+def test_math(mocker):
+    fake_math = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text=/'compute 5+6*3')
+    math(mock_message)
+    pass
+    
+    

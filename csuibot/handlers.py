@@ -1,5 +1,4 @@
 import re
-from __future__ import division
 
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac
@@ -31,33 +30,16 @@ def _is_compute_command(message):
     return re.match(regexp, message.text) is not None
     
 #TODO
-#use eval, what if not decimal?? ask around!
-#if not math expression?? ->NameError
-#breakitdown?? compute is command, take it out
-#use search?
-#pake try except aja ntar
 
 @bot.message_handler(func=_is_compute_command)
 def compute(message):
-    return eval(message)
-    pass
+    result = 0
+    try:
+       result = eval(message)
+    except:
+        result = 'ERROR: This is not a math expression.'
+    bot.reply_to(message, result)
 
-##do i really understand this tho
-##if '/compute' in message:
-##    head, sep, tail = message.partition('/')
-##    input_nums = tail.replace('compute','')
-##    input_nums = input_nums.replace('\'','')
-##    finalexp = shlex.split(input_nums)
-##    exp = finalexp[0]
-##    bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-##    error = 'Don\'t add alphabet in between please. for example do, /compute 2+2-5(4+8)'
-##    if not exp:
-##        bot.sendMessage(chat_id=chat_id,text='it is not a math expression.')
-##    elif re.search('[a-zA-Z]', exp):
-##        bot.sendMessage(chat_id=chat_id,text=error)
-##    else:
-##        bot.sendMessage(chat_id=chat_id,text=compute(exp))
-##
 
 
 @bot.message_handler(func=_is_zodiac_command)

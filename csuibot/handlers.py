@@ -1,5 +1,7 @@
 import re
 
+from time import gmtime, mktime
+from datetime import datetime
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
@@ -93,6 +95,38 @@ def compute(message):
 def _is_chant_command(message):
     regexp = r'(?i)^(.*?(\bfasilkom\b)[^$]*)$'
     return re.match(regexp, message.text) is not None
+
+
+def get_current_date():
+    return datetime.now()
+
+
+def get_current_time():
+    return datetime.utcnow()
+
+
+@bot.message_handler(commands=['date'])
+def date(message):
+    app.logger.debug("'date' command detected")
+    current_date = "{:%a, %d %B %Y}".format(get_current_date())
+    bot.reply_to(message, current_date)
+
+
+@bot.message_handler(commands=['time'])
+def time(message):
+    app.logger.debug("'time' command detected")
+
+    wib = 7 * 60 * 60
+    base_utc = datetime(1970, 1, 1)
+    now_utc = get_current_time()
+
+    gmt_time = now_utc - base_utc
+    gmt_time = gmt_time.total_seconds()
+    gmt_time = gmt_time + wib
+
+    wib_time = datetime.fromtimestamp(mktime(gmtime(gmt_time)))
+    time_text = "{:%I:%M %p (GMT+7)}".format(wib_time)
+    bot.reply_to(message, time_text)
 
 
 @bot.message_handler(func=_is_zodiac_command)

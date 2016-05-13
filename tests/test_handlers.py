@@ -1,7 +1,9 @@
 from unittest.mock import Mock
 
 from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
-                              board, definition, synonym, antonym, hex2rgb, chant)
+                              board, definition, synonym, antonym, hex2rgb,
+                              date, time, chant)
+from datetime import datetime
 
 
 def test_help(mocker):
@@ -15,6 +17,28 @@ def test_help(mocker):
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     assert args[1] == expected_text
+
+
+def test_date(mocker):
+    fake_date = datetime(2016, 5, 27)
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_current_date', return_value=fake_date)
+    mock_message = '/date'
+    date(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Fri, 27 May 2016'
+
+
+def test_time(mocker):
+    fake_data = datetime(2016, 5, 27, 4, 10)
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_current_time', return_value=fake_data)
+    mock_message = '/time'
+    time(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '11:10 AM (GMT+7)'
 
 
 def test_zodiac(mocker):

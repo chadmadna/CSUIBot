@@ -1,7 +1,7 @@
 import re
 
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_answer
 
 
 @bot.message_handler(commands=['about'])

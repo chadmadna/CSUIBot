@@ -48,7 +48,7 @@ def shio(message):
 @bot.message_handler(func=_is_answerbot_command)
 def answerBot(message):
     app.logger.debug("'answerbot' command detected")
-    app.logger.debug("answer = {}".format(res))
+    #app.logger.debug("answer = {}".format(res))
     bot.reply_to(message, lookup_answer(self))
     # do i need text split for a command without anything else after it. ex: /speaknicely [no additional message]; unlike /zodiac yyyy-mm-dd    
     

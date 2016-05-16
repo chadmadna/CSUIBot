@@ -23,9 +23,9 @@ def _is_shio_command(message):
     regexp = r'/shio \d{4}\-\d{2}\-\d{2}'
     return re.match(regexp, message.text) is not None
 
-##def _is_answerbot_command(message):
-##    regexp = r'/speaknicely'
-##    return re.match(regexp, message.text) is not None
+def _is_answerbot_command(message):
+    regexp = r'/speaknicely'
+    return re.match(regexp, message.text) is not None
 
 
 @bot.message_handler(func=_is_zodiac_command)
@@ -45,10 +45,12 @@ def shio(message):
     app.logger.debug('year = {}'.format(year))
     bot.reply_to(message, lookup_chinese_zodiac(year))
 
-##@bot.message_handler(func=_is_answerbot_command)
-##def answerBot(message):
-##    app.logger.debug("'answerbot' command detected")
-##    # do i need text split for a command without anything else after it. ex: /speaknicely [no additional message]; unlike /zodiac yyyy-mm-dd    
+@bot.message_handler(func=_is_answerbot_command)
+def answerBot(message):
+    app.logger.debug("'answerbot' command detected")
+    app.logger.debug("answer = {}".format(self.res))
+    bot.reply_to(message, lookup_answer(self))
+    # do i need text split for a command without anything else after it. ex: /speaknicely [no additional message]; unlike /zodiac yyyy-mm-dd    
     
 
 

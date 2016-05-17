@@ -4,7 +4,6 @@ from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac
 
 
-
 @bot.message_handler(commands=['about'])
 def help(message):
     app.logger.debug("'about' command detected")
@@ -24,22 +23,21 @@ def _is_shio_command(message):
     regexp = r'/shio \d{4}\-\d{2}\-\d{2}'
     return re.match(regexp, message.text) is not None
 
-#TODO
+
 def _is_compute_command(message):
     regexp = r'/compute'
     return re.match(regexp, message.text) is not None
-    
-#TODO
+
 
 @bot.message_handler(func=_is_compute_command)
 def compute(message):
     result = 0
     try:
-       result = eval(message)
+        result = eval(message)
     except:
         result = 'ERROR: This is not a math expression.'
     bot.reply_to(message, result)
-
+    return result
 
 
 @bot.message_handler(func=_is_zodiac_command)

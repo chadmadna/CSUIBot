@@ -37,15 +37,24 @@ def test_shio(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_shio
 
-#TODO
-def test_compute(mocker):
-    fake_compute = 'foo bar'
+
+def test_compute1(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute aa+bb')
     res = compute(mock_message)
-    if res != 'ERROR':
-        raise AssertionError("Wrong Result")    
-    
-    
-    
-    
+    if res != 'ERROR: This is not a math expression.':
+        raise AssertionError("Wrong Result")
+
+def test_compute2(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute "hallo world"')
+    res = compute(mock_message)
+    if res != 'ERROR: This is not a math expression.':
+        raise AssertionError("Wrong Result")
+
+def test_compute3(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 5+7')
+    res = compute(mock_message)
+    if res != 'ERROR: This is not a math expression.':
+        raise AssertionError(res)

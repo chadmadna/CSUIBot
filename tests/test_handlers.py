@@ -45,6 +45,7 @@ def test_compute1(mocker):
     if res != 'ERROR: This is not a math expression.':
         raise AssertionError("Wrong Result")
 
+
 def test_compute2(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute "hallo world"')
@@ -52,9 +53,10 @@ def test_compute2(mocker):
     if res != 'ERROR: This is not a math expression.':
         raise AssertionError("Wrong Result")
 
+
 def test_compute3(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 5+7')
     res = compute(mock_message)
     if res != 'ERROR: This is not a math expression.':
-        raise AssertionError(res)
+        raise AssertionError("wrong Result")

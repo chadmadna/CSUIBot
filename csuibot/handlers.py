@@ -1,11 +1,15 @@
 import re
-
+import operator
 from time import gmtime, mktime
 from datetime import datetime
+from collections import defaultdict
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
                     generate_chant)
+
+message_dic = defaultdict(dict)
+total_messages = defaultdict(int)
 
 
 def _is_zodiac_command(message):
@@ -129,6 +133,27 @@ def time(message):
     bot.reply_to(message, time_text)
 
 
+@bot.message_handler(commands=['top_posters'])
+def top_posters(message):
+    response = 'Top 5 Posters:\n'
+    app.logger.debug("'top_posters' command detected")
+
+    if message.chat.type == 'private':
+        bot.reply_to(message, "This command is only available for group chats!")
+
+    elif message.chat.type == 'group':
+        try:
+            chat_messages = message_dic[message.chat.id]
+            chat_total_mess = total_messages[message.chat.id]
+            dic = sorted(chat_messages.items(), key=operator.itemgetter(1))
+            for i, (name, count) in enumerate(reversed(dic[-5:])):
+                response += '{}. {} ({:.2%})\n'.format(i+1, name, (count/chat_total_mess))
+            bot.reply_to(message, response)
+
+        except KeyError:
+            bot.reply_to(message, 'No messages logged. Start chatting first!')
+
+
 @bot.message_handler(func=_is_zodiac_command)
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
@@ -196,6 +221,22 @@ def _parse_word(text):
     """Return first word if input contains multiple words."""
     ret = text[1:].split(' ')
     return ret[:2] if len(ret) > 2 else ret
+
+
+@bot.message_handler(regexp=r'\w')
+def get_messages(message):
+    app.logger.debug("'get_message' handler detected")
+    global message_dic
+    global total_messages
+
+    if message.chat.type == 'group':
+        name = str(message.from_user.first_name)
+        chat_id = message.chat.id
+        try:
+            message_dic[chat_id][name] += 1
+        except KeyError:
+            message_dic[chat_id][name] = 1
+        total_messages[chat_id] += 1
 
 
 def _parse_date(text):

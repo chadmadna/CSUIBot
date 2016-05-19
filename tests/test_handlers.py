@@ -1,8 +1,8 @@
 from unittest.mock import Mock
-
 from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               board, definition, synonym, antonym, hex2rgb,
-                              date, time, chant)
+                              date, time, chant, top_posters, get_messages,
+                              message_dic, total_messages)
 from datetime import datetime
 
 
@@ -39,6 +39,80 @@ def test_time(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '11:10 AM (GMT+7)'
+
+
+def test_top_posters(mocker):
+    class Chat:
+        def __init__(self, id, type):
+            self.id = id
+            self.type = type
+
+    class Message:
+        def __init__(self, chat):
+            self.chat = chat
+
+    fake_dic = {
+        1: {
+            'one': 1,
+            'two': 2,
+            'three': 3,
+            'four': 4,
+            'five': 5
+        }
+    }
+
+    fake_total = {
+        1: 15
+    }
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch.dict(message_dic, fake_dic)
+    mocker.patch.dict(total_messages, fake_total)
+    message = Message(Chat(1, 'group'))
+    top_posters(message)
+
+    expected_text = (
+        'Top 5 Posters:\n'
+        '1. five (33.33%)\n'
+        '2. four (26.67%)\n'
+        '3. three (20.00%)\n'
+        '4. two (13.33%)\n'
+        '5. one (6.67%)\n'
+        )
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == expected_text
+
+
+def test_get_messages(mocker):
+    class Chat:
+        def __init__(self, id, type):
+            self.id = id
+            self.type = type
+
+    class User:
+        def __init__(self, first_name):
+            self.first_name = first_name
+
+    class Message:
+        def __init__(self, chat, user):
+            self.chat = chat
+            self.from_user = user
+
+    expected_message_dic = {1: {'Cow': 2, 'Sheep': 1}, 2: {'Chicken': 1}}
+    expected_total_messages = {1: 3, 2: 1}
+
+    message0 = Message(Chat(1, 'group'), User('Cow'))
+    message1 = Message(Chat(1, 'group'), User('Cow'))
+    message2 = Message(Chat(1, 'group'), User('Sheep'))
+    message3 = Message(Chat(2, 'group'), User('Chicken'))
+    messages = [message0, message1, message2, message3]
+
+    for message in messages:
+        get_messages(message)
+
+    assert message_dic == expected_message_dic
+    assert total_messages == expected_total_messages
 
 
 def test_zodiac(mocker):

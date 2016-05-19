@@ -3,6 +3,7 @@ from csuibot.utils import word
 
 
 class TestZodiac:
+
     def test_taurus_lower_bound(self):
         res = utils.lookup_zodiac(4, 20)
         assert res == 'taurus'

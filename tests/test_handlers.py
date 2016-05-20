@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, yelFasilkom
+from csuibot.handlers import help, zodiac, shio, yelfasilkom
 
 
 def test_help(mocker):
@@ -37,10 +37,11 @@ def test_shio(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_shio
 
-def test_yelFasilkom(mocker):
+
+def test_yelfasilkom(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock()
-    yelFasilkom(mock_message)
+    yelfasilkom(mock_message)
 
     args, _ = mocked_reply_to.call_args
     expected_text = (

@@ -1,7 +1,7 @@
 import re
 
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_answer
+from .utils import lookup_zodiac, lookup_chinese_zodiac
 
 
 @bot.message_handler(commands=['about'])
@@ -13,8 +13,9 @@ def help(message):
     )
     bot.reply_to(message, about_text)
 
+
 @bot.message_handler(commands=['yelfasilkom'])
-def yelFasilkom(message):
+def yelfasilkom(message):
     app.logger.debug("'yelfasilkom' command detected")
     yelfslkm_text = (
         "Aba-aba pembuka: Fasilkom!!!\n"
@@ -44,10 +45,6 @@ def _is_shio_command(message):
     regexp = r'/shio \d{4}\-\d{2}\-\d{2}'
     return re.match(regexp, message.text) is not None
 
-def _is_answerbot_command(message):
-    regexp = r'/speaknicely'
-    return re.match(regexp, message.text) is not None
-
 
 @bot.message_handler(func=_is_zodiac_command)
 def zodiac(message):
@@ -65,14 +62,6 @@ def shio(message):
     year, _, _ = _parse_date(date_str)
     app.logger.debug('year = {}'.format(year))
     bot.reply_to(message, lookup_chinese_zodiac(year))
-
-@bot.message_handler(func=_is_answerbot_command)
-def answerBot(message):
-    app.logger.debug("'answerbot' command detected")
-    #app.logger.debug("answer = {}".format(res))
-    bot.reply_to(message, lookup_answer(self))
-    # do i need text split for a command without anything else after it. ex: /speaknicely [no additional message]; unlike /zodiac yyyy-mm-dd    
-    
 
 
 def _parse_date(text):

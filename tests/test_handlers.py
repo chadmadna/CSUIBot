@@ -42,7 +42,7 @@ def test_hextorgb(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_hex_to_rgb', return_value=fake_rgb)
     mock_message = Mock(text='/colour #ffffff')
-    convertrgb(mock_message)    #calls function from handlers.py?
+    convertrgb(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_rgb

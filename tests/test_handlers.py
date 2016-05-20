@@ -56,7 +56,7 @@ def test_yelFasilkom(mocker):
         "Kami Cinta Fasilkom\n"
         "Kami Bangga Fasilkom\n"
         "Maju Terus\n"
-        "Fasilkom*\n"
+        "Fasilkom*\n\n"
         "* : Diikuti dengan gerakan menghentakkan kaki\n"
     )
     assert args[1] == expected_text

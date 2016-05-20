@@ -29,7 +29,7 @@ def yelFasilkom(message):
         "Kami Cinta Fasilkom\n"
         "Kami Bangga Fasilkom\n"
         "Maju Terus\n"
-        "Fasilkom*\n"
+        "Fasilkom*\n\n"
         "* : Diikuti dengan gerakan menghentakkan kaki\n"
     )
     bot.reply_to(message, yelfslkm_text)

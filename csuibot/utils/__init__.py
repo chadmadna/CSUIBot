@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import boardgame as b
 
 
 def lookup_zodiac(month, day):
@@ -38,3 +39,20 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def draw_board(game):
+    boards = [
+        b.ChessBoard(),
+        b.CheckersBoard(),
+        b.ReversiBoard()
+    ]
+
+    for board in boards:
+        if board.name == game:
+            return str(board)
+    return 'Not yet implemented, please send request to Irsyad Nabil.'
+
+
+def draw_empty_board():
+    return str(b.AbstractBoard())

@@ -174,3 +174,48 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestBoardGame:
+
+    def test_empty_board(self):
+        res = ("\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\n"
+               "\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\n") * 4
+
+        assert utils.draw_empty_board() == res
+
+    def test_chess_board(self):
+        black = "\U0001f3e4\U0001f40e\U0001f473\U0001f470" \
+                "\U0001f468\U0001f473\U0001f40e\U0001f3e4\n" \
+                "\U0001f466\U0001f466\U0001f466\U0001f466" \
+                "\U0001f466\U0001f466\U0001f466\U0001f466\n"
+
+        empty = ("\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\n"
+                 "\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\n") * 2
+
+        white = "\U0001f467\U0001f467\U0001f467\U0001f467" \
+                "\U0001f467\U0001f467\U0001f467\U0001f467\n" \
+                "\u26ea\U0001f417\U0001f472\U0001f478" \
+                "\U0001f474\U0001f472\U0001f417\u26ea\n"
+
+        assert utils.draw_board("chess") == black + empty + white
+
+    def test_checkers_board(self):
+        black = ("\u2b1c\u26ab\u2b1c\u26ab\u2b1c\u26ab\u2b1c\u26ab\u2b1c\u26ab\n"
+                 "\u26ab\u2b1c\u26ab\u2b1c\u26ab\u2b1c\u26ab\u2b1c\u26ab\u2b1c\n") * 2
+
+        empty = "\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\n" \
+                "\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\n"
+
+        white = ("\u2b1c\u26aa\u2b1c\u26aa\u2b1c\u26aa\u2b1c\u26aa\u2b1c\u26aa\n"
+                 "\u26aa\u2b1c\u26aa\u2b1c\u26aa\u2b1c\u26aa\u2b1c\u26aa\u2b1c\n") * 2
+
+        assert utils.draw_board("checkers") == black + empty + white
+
+    def test_reversi_board(self):
+        empty = "\u2b1c\u2b1c\u2b1c\u2b1c\u2b1c\u2b1c\u2b1c\u2b1c\n" * 3
+
+        center = "\u2b1c\u2b1c\u2b1c\u26aa\u26ab\u2b1c\u2b1c\u2b1c\n" \
+                 "\u2b1c\u2b1c\u2b1c\u26ab\u26aa\u2b1c\u2b1c\u2b1c\n"
+
+        assert utils.draw_board("reversi") == empty + center + empty

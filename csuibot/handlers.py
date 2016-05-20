@@ -18,19 +18,19 @@ def yelFasilkom(message):
     app.logger.debug("'yelfasilkom' command detected")
     yelfslkm_text = (
         "Aba-aba pembuka: Fasilkom!!!\n"
-        "Fasilkom!*"
-        "Ilmu Komputer"
-        "Fasilkom!*"
-        "Satu Banding Seratus"
-        "Kami Elit, Kami Kompak, Kami Anak UI"
-        "MIPA Bukan, Teknik Bukan,"
-        "FE Apalagi*"
-        "Kami ini Fakultas No.1 di UI"
-        "Kami Cinta Fasilkom"
-        "Kami Bangga Fasilkom"
-        "Maju Terus"
+        "Fasilkom!*\n"
+        "Ilmu Komputer\n"
+        "Fasilkom!*\n"
+        "Satu Banding Seratus\n"
+        "Kami Elit, Kami Kompak, Kami Anak UI\n"
+        "MIPA Bukan, Teknik Bukan,\n"
+        "FE Apalagi*\n"
+        "Kami ini Fakultas No.1 di UI\n"
+        "Kami Cinta Fasilkom\n"
+        "Kami Bangga Fasilkom\n"
+        "Maju Terus\n"
         "Fasilkom*\n"
-        "* : Diikuti dengan gerakan menghentakkan kaki"
+        "* : Diikuti dengan gerakan menghentakkan kaki\n"
     )
     bot.reply_to(message, yelfslkm_text)
 

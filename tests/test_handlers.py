@@ -2,7 +2,8 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               board, definition, synonym, antonym, hex2rgb,
                               date, time, chant, top_posters, get_messages,
-                              message_dic, total_messages)
+                              message_dic, total_messages, lyricsearch)
+
 from datetime import datetime
 
 
@@ -113,6 +114,17 @@ def test_get_messages(mocker):
 
     assert message_dic == expected_message_dic
     assert total_messages == expected_total_messages
+
+
+def test_lyricsearch(mocker):
+    fake_songs = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lyric_search', return_value=fake_songs)
+    mock_message = Mock(text='/lyricsearch love')
+    lyricsearch(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_songs
 
 
 def test_zodiac(mocker):

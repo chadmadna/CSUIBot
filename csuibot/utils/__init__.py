@@ -1,6 +1,23 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import boardgame as b
 from csuibot.utils import word as w
+from csuibot import app
+import requests
+
+
+def lyric_search(lyrics):
+    apikey = app.config['MUSIXMATCH_API']
+    service_url = 'http://api.musixmatch.com/ws/1.1/track.search'
+    sugg = 'Possible Songs:\n'
+    r = requests.get(service_url, params=dict(q_lyrics=lyrics, apikey=apikey))
+    json_resp = r.json()
+    tracks = json_resp['message']['body']['track_list']
+    for element in tracks[0:5]:
+        track = element['track']['track_name']
+        artist = element['track']['artist_name']
+        app.logger.debug('{} by {}'.format(track, artist))
+        sugg = sugg + '{} by {}\n'.format(track, artist)
+    return sugg if tracks else 'No songs found!'
 
 
 def lookup_zodiac(month, day):

@@ -2,6 +2,49 @@ from csuibot import utils
 from csuibot.utils import word
 
 
+class TestLyricSearch:
+
+    def test_lyric_search(self, mocker):
+        class FakeResponse:
+            def json(self):
+                track_list = [
+                    {
+                        'track': {
+                            'track_name': 'woof',
+                            'artist_name': 'dog'
+                        }
+                    },
+                    {
+                        'track': {
+                            'track_name': 'meow',
+                            'artist_name': 'cat'
+                        }
+                    }
+                ]
+                return {
+                    'message': {
+                        'body': {
+                            'track_list': track_list
+                        }
+                    }
+                }
+
+        expected_text = (
+            'Possible Songs:\n'
+            'woof by dog\n'
+            'meow by cat\n'
+            )
+
+        mocked_get = mocker.patch('requests.get', return_value=FakeResponse())
+        res = utils.lyric_search('blabla')
+        _, kwargs = mocked_get.call_args
+
+        assert 'params' in kwargs
+        assert 'q_lyrics' in kwargs['params']
+        assert kwargs['params']['q_lyrics'] == 'blabla'
+        assert res == expected_text
+
+
 class TestZodiac:
 
     def test_taurus_lower_bound(self):

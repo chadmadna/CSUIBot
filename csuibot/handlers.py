@@ -6,7 +6,7 @@ from collections import defaultdict
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
-                    generate_chant)
+                    generate_chant, lyric_search)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -49,6 +49,11 @@ def _is_antonym_command(message):
 
 def _is_hextorgb_command(message):
     regexp = r'/colour #......'
+    return re.match(regexp, message.text) is not None
+
+
+def _lyric_search_command(message):
+    regexp = r'/lyricsearch \w+'
     return re.match(regexp, message.text) is not None
 
 
@@ -152,6 +157,15 @@ def top_posters(message):
 
         except KeyError:
             bot.reply_to(message, 'No messages logged. Start chatting first!')
+
+
+@bot.message_handler(func=_lyric_search_command)
+def lyricsearch(message):
+    app.logger.debug("'lyricsearch' command detected")
+    cmd_len = len('/lyricsearch ')
+    lyrics = message.text[cmd_len:]
+    app.logger.debug('lyrics = {}'.format(lyrics))
+    bot.reply_to(message, lyric_search(lyrics))
 
 
 @bot.message_handler(func=_is_zodiac_command)

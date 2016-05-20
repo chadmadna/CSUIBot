@@ -13,6 +13,27 @@ def help(message):
     )
     bot.reply_to(message, about_text)
 
+@bot.message_handler(commands=['yelfasilkom'])
+def yelFasilkom(message):
+    app.logger.debug("'yelfasilkom' command detected")
+    yelfslkm_text = (
+        "Aba-aba pembuka: Fasilkom!!!\n"
+        "Fasilkom!*"
+        "Ilmu Komputer"
+        "Fasilkom!*"
+        "Satu Banding Seratus"
+        "Kami Elit, Kami Kompak, Kami Anak UI"
+        "MIPA Bukan, Teknik Bukan,"
+        "FE Apalagi*"
+        "Kami ini Fakultas No.1 di UI"
+        "Kami Cinta Fasilkom"
+        "Kami Bangga Fasilkom"
+        "Maju Terus"
+        "Fasilkom*\n"
+        "* : Diikuti dengan gerakan menghentakkan kaki"
+    )
+    bot.reply_to(message, yelfslkm_text)
+
 
 def _is_zodiac_command(message):
     regexp = r'/zodiac \d{4}\-\d{2}\-\d{2}'

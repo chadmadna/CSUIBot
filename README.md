@@ -136,3 +136,84 @@ If you want to write new features to CSUIBot or fix bugs, that's great! Here is 
     ```
 
 1. Done!
+
+### How to Test Your Bot Locally
+
+Suppose we're going to test our handler for `/about` command.
+
+1. Set your `.env` file if you'd like. The following instructions will assume that you set your `.env` file exactly the same as the example provided in `.env.example`:
+
+    ```
+    APP_ENV="development"
+    DEBUG="true"
+    TELEGRAM_BOT_TOKEN="somerandomstring"
+    LOG_LEVEL="DEBUG"
+    WEBHOOK_HOST="127.0.0.1"
+    ```
+
+1. Start your bot locally by running `python manage.py runserver`. Make sure you've already activate your virtual environment before issuing this command.
+
+1. Open `csuibot/handlers.py` file and take a look at `help` handler.
+
+    ```python
+    @bot.message_handler(commands=['about'])
+    def help(message):
+        app.logger.debug("'about' command detected")
+        about_text = (
+            'CSUIBot v0.0.1\n\n'
+            'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
+        )
+        bot.reply_to(message, about_text)
+    ```
+    
+    Notice that we have `bot.reply_to(message, about_text)`. This line means that we're sending a reply message containing the text stored in `about_text` variable to Telegram. However, note that in our configuration file (i.e. `.env` file) we are using a fake Telegram bot token, i.e. `somerandomstring`. So, this line will fail. Even if we're using real bot token, this line will most likely fail since we're going to use a fake data (this will be clear later). So, for testing locally, we don't want this behavior. We should assume that this line will work correctly since we're using `PyTelegramBotAPI` library for this. We should replace that line, for instance with a `print` statement:
+    
+    ```python
+    # bot.reply_to(message, about_text)
+    print(about_text)  # we print the about text instead of sending it
+    ```
+
+1. Now, we are going to simulate someone invoking `/about` command to our bot. From [Telegram Bot API](https://core.telegram.org/bots/api#setwebhook),
+
+    > Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url, containing a JSON-serialized Update.
+
+    so we need to make a POST request containing an `/about` command. To do this, you may want to use an HTTP client tool, such as [Cocoa REST client](http://mmattozzi.github.io/cocoa-rest-client/) for OSX, [Postman extension](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) for Google Chrome, or [RESTclient add-on](https://addons.mozilla.org/en-US/firefox/addon/restclient/) for Firefox. If you prefer to use `curl` it's fine too.
+
+    Our webhook URL is `http://localhost:5000/somerandomstring`. Telegram's Update object containing `/about` command in JSON format look like this:
+
+      ```json
+      {
+          "update_id": 1,
+          "message": {
+              "message_id": 1,
+              "date": 12345,
+              "chat": {
+                  "id": 123,
+                  "type": "group"
+              },
+              "text": "/about"
+          }
+      }
+      ```
+
+    The data above is obviously fake. The most important thing is our message has `/about` as its text. Other fields are mandatory so we can simply fill them with fake data. You can find what fields are required for each types in [Telegram Bot API types documentation](https://core.telegram.org/bots/api#available-types).
+
+    Now, make a POST request to our webhook URL with the above JSON as its payload. If you're using `curl`, the command look like this
+
+    ```bash
+    curl -H "content-type: application/json" --data '{"update_id": 1, "message": {"message_id": 1, "date": 12345, "chat": {"id": 123, "type": "group"}, "text": "/about"}}' http://localhost:5000/somerandomstring
+    ```
+
+    Please find out by yourself on how to make such request using your chosen HTTP client.
+
+1. Take a look at your terminal window where you've started the bot. You should see the about text printed to the screen like so:
+
+    ```
+    CSUIBot v0.0.1
+
+    Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!
+    ```
+    
+    This means when the `/about` command is invoked, our handler is run.
+
+In summary, to test your bot locally all you need to do is simulating Telegram sending an Update to your webhook URL via HTTP POST request with the update data in JSON format as its payload. But be careful not to actually send a bot reply since the bot token and/or the data are fake.

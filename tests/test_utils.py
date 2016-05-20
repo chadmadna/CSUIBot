@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 from csuibot import utils
 from csuibot.utils import word
 
@@ -226,56 +224,54 @@ class TestBoardGame:
 
 class TestWord:
 
-    def test_definition(self):
-        def new_init(self, word):
-            self.name = 'definition'
-            self.mean = {'foo': ['bar']}
-            self.find = self.lookup()
+    def create_fake_init(self, name, mean=None):
+        def fake_init(slf, word):
+            slf.name = name
+            slf.mean = mean
+            slf.find = slf.lookup()
+        return fake_init
 
-        with patch.object(word.Definition, '__init__', new_init):
-            assert utils.lookup_word('definition', 'test') == 'foo\n1. bar\n\n'
+    def test_definition(self, mocker):
+        mocker.patch.object(word.Definition, '__init__',
+                            self.create_fake_init('definition', {'foo': ['bar']}))
+        mocker.patch.object(word.Synonym, '__init__', self.create_fake_init('synonym'))
+        mocker.patch.object(word.Antonym, '__init__', self.create_fake_init('antonym'))
 
-    def test_definition_not_found(self):
-        def new_init(self, word):
-            self.name = 'definition'
-            self.mean = None
-            self.find = self.lookup()
+        assert utils.lookup_word('definition', 'test') == 'foo\n1. bar\n\n'
 
-        with patch.object(word.Definition, '__init__', new_init):
-            assert utils.lookup_word('definition', 'test') == 'Invalid word'
+    def test_definition_not_found(self, mocker):
+        mocker.patch.object(word.Definition, '__init__', self.create_fake_init('definition'))
+        mocker.patch.object(word.Synonym, '__init__', self.create_fake_init('synonym'))
+        mocker.patch.object(word.Antonym, '__init__', self.create_fake_init('antonym'))
 
-    def test_synonym(self):
-        def new_init(self, word):
-            self.name = 'synonym'
-            self.mean = ['foo', 'bar']
-            self.find = self.lookup()
+        assert utils.lookup_word('definition', 'test') == 'Invalid word'
 
-        with patch.object(word.Synonym, '__init__', new_init):
-            assert utils.lookup_word('synonym', 'test') == 'foo bar '
+    def test_synonym(self, mocker):
+        mocker.patch.object(word.Definition, '__init__', self.create_fake_init('definition'))
+        mocker.patch.object(word.Synonym, '__init__',
+                            self.create_fake_init('synonym', ['foo', 'bar']))
+        mocker.patch.object(word.Antonym, '__init__', self.create_fake_init('antonym'))
 
-    def test_synonym_not_found(self):
-        def new_init(self, word):
-            self.name = 'synonym'
-            self.mean = None
-            self.find = self.lookup()
+        assert utils.lookup_word('synonym', 'test') == 'foo bar '
 
-        with patch.object(word.Synonym, '__init__', new_init):
-            assert utils.lookup_word('synonym', 'test') == 'Invalid word'
+    def test_synonym_not_found(self, mocker):
+        mocker.patch.object(word.Definition, '__init__', self.create_fake_init('definition'))
+        mocker.patch.object(word.Synonym, '__init__', self.create_fake_init('synonym'))
+        mocker.patch.object(word.Antonym, '__init__', self.create_fake_init('antonym'))
 
-    def test_antonym(self):
-        def new_init(self, word):
-            self.name = 'antonym'
-            self.mean = ['foo', 'bar']
-            self.find = self.lookup()
+        assert utils.lookup_word('synonym', 'test') == 'Invalid word'
 
-        with patch.object(word.Antonym, '__init__', new_init):
-            assert utils.lookup_word('antonym', 'test') == 'foo bar '
+    def test_antonym(self, mocker):
+        mocker.patch.object(word.Definition, '__init__', self.create_fake_init('definition'))
+        mocker.patch.object(word.Synonym, '__init__', self.create_fake_init('synonym'))
+        mocker.patch.object(word.Antonym, '__init__',
+                            self.create_fake_init('antonym', ['foo', 'bar']))
 
-    def test_antonym_not_found(self):
-        def new_init(self, word):
-            self.name = 'antonym'
-            self.mean = None
-            self.find = self.lookup()
+        assert utils.lookup_word('antonym', 'test') == 'foo bar '
 
-        with patch.object(word.Antonym, '__init__', new_init):
-            assert utils.lookup_word('antonym', 'test') == 'Invalid word'
+    def test_antonym_not_found(self, mocker):
+        mocker.patch.object(word.Definition, '__init__', self.create_fake_init('definition'))
+        mocker.patch.object(word.Synonym, '__init__', self.create_fake_init('synonym'))
+        mocker.patch.object(word.Antonym, '__init__', self.create_fake_init('antonym'))
+
+        assert utils.lookup_word('antonym', 'test') == 'Invalid word'

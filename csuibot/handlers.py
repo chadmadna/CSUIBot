@@ -24,30 +24,28 @@ def _is_shio_command(message):
     return re.match(regexp, message.text) is not None
 
 
-<<<<<<< HEAD
 def _is_compute_command(message):
-    regexp = r'/compute'
+    regexp = r'/compute ...'
     return re.match(regexp, message.text) is not None
 
 
 @bot.message_handler(func=_is_compute_command)
 def compute(message):
-    result = 0
-    try:
-        result = eval(message)
-    except:
-        result = 'ERROR: This is not a math expression.'
-    bot.reply_to(message, result)
-    return result
+    app.logger.debug("'compute' command detected")
+    exp = message.text
+    exp = exp[8:]
+    error = 'you think you can add banana+apple? not happening man.'
+    if re.search('[a-zA-Z]', exp):
+        bot.reply_to(message, error)
+    else:
+        bot.reply_to(message, eval(exp))
 
 
-=======
 def _is_board_command(message):
     regexp = r'/board( [a-z]+)?'
     return re.match(regexp, message.text) is not None
 
 
->>>>>>> 14bc0dacc7443f4df367e60204cd0323159bdfd4
 @bot.message_handler(func=_is_zodiac_command)
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")

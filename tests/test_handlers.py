@@ -36,3 +36,14 @@ def test_shio(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_shio
+
+def test_hextorgb(mocker):
+    fake_rgb = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_hex_to_rgb', return_value=fake_rgb)
+    mock_message = Mock(text='/colour #ffffff')
+    convertrgb(mock_message)    #calls function from handlers.py?
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_rgb
+

@@ -23,3 +23,10 @@ def main():
     testans.match()
 
 main()
+
+#from csuibot import utils
+
+#class TestAnswer:
+
+#   def test_match(self):
+#       how to assert if theres many variations???

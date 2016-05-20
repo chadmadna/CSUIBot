@@ -40,6 +40,6 @@ def lookup_answer(self):
                 ]
     # Function to parse the list and select randomly
     # then send to handlers.py. then handlers.py will reply to user.
-    self.res = self.comments[random.randint(0, len(self.comments)-1)]
-    return self.res
+    res = self.comments[random.randint(0, len(self.comments)-1)]
+    return res
 

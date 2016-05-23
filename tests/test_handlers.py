@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
-                              board, definition, synonym, antonym, hex2rgb)
+                              board, definition, synonym, antonym, hex2rgb, chant)
 
 
 def test_help(mocker):
@@ -127,3 +127,14 @@ def test_hextorgb(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_rgb
+
+
+def test_chant(mocker):
+    fake_chant = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_chant', return_value=fake_chant)
+    mock_message = Mock(text='Saya anak Fasilkom UI.')
+    chant(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_chant

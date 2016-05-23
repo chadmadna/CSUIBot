@@ -33,7 +33,7 @@ def lookup_chinese_zodiac(year):
         6: 'horse',
         7: 'goat',
         8: 'monkey'
-        }
+    }
     ix = (year - 4) % num_zodiacs
 
     try:
@@ -76,3 +76,7 @@ def lookup_hex_to_rgb(value):
     lv = len(value)
     result = tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
     return str(result)
+
+
+def generate_chant():
+    return "Viva, Viva, Viva Fasilkom!"

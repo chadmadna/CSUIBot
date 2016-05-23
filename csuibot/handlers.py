@@ -89,6 +89,11 @@ def compute(message):
         bot.reply_to(message, eval(exp))
 
 
+def _is_chant_command(message):
+    regexp = r'(?i)^(.*?(\bfasilkom\b)[^$]*)$'
+    return re.match(regexp, message.text) is not None
+
+
 @bot.message_handler(func=_is_zodiac_command)
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
@@ -160,3 +165,9 @@ def _parse_word(text):
 
 def _parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(func=_is_chant_command)
+def chant(message):
+    app.logger.debug("'chant' command detected")
+    bot.reply_to(message, generate_chant())

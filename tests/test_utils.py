@@ -275,3 +275,10 @@ class TestWord:
         mocker.patch.object(word.Antonym, '__init__', self.create_fake_init('antonym'))
 
         assert utils.lookup_word('antonym', 'test') == 'Invalid word'
+
+
+class TestChant:
+
+    def test_chant(self):
+        res = "Viva, Viva, Viva Fasilkom!"
+        assert utils.generate_chant() == res

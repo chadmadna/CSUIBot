@@ -32,14 +32,8 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def lookup_answer(self):
-    # Create an array containing the comments. hardcoded
-    self.comments = ["Your kindness is a balm to all who encounter it.",
-                "Jokes are funnier when you tell them.",
-                "There's ordinary, and then there's you."
-                ]
-    # Function to parse the list and select randomly
-    # then send to handlers.py. then handlers.py will reply to user.
-    res = self.comments[random.randint(0, len(self.comments)-1)]
-    return res
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
 

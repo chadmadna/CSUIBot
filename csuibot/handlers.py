@@ -53,8 +53,8 @@ def shio(message):
 def hex2rgb(message):
     app.logger.debug("'colour' command detected")
     _, colour_value = message.text.split(' ')
-    app.logger.debug('colour = {}'.format(value))
-    bot.reply_to(message, lookup_hex_to_rgb(value))
+    app.logger.debug('colour = {}'.format(colour_value))
+    bot.reply_to(message, lookup_hex_to_rgb(colour_value))
 
 
 def _parse_date(text):

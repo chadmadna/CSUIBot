@@ -127,6 +127,26 @@ def test_lyricsearch(mocker):
     assert args[1] == fake_songs
 
 
+def test_zodiac_argument(mocker):
+    prompt_txt = 'Please input the date in yyyy-mm-dd format, e.g. 1998-05-02'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/zodiac')
+    zodiac(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == prompt_txt
+
+
+def test_shio_argument(mocker):
+    prompt_txt = 'Please input the date in yyyy-mm-dd format, e.g. 1998-05-02'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/shio')
+    shio(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == prompt_txt
+
+
 def test_zodiac(mocker):
     fake_zodiac = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

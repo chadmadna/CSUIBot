@@ -13,12 +13,12 @@ total_messages = defaultdict(int)
 
 
 def _is_zodiac_command(message):
-    regexp = r'/zodiac \d{4}\-\d{2}\-\d{2}'
+    regexp = r'/zodiac( \d{4}\-\d{2}\-\d{2})?$'
     return re.match(regexp, message.text) is not None
 
 
 def _is_shio_command(message):
-    regexp = r'/shio \d{4}\-\d{2}\-\d{2}'
+    regexp = r'/shio( \d{4}\-\d{2}\-\d{2})?$'
     return re.match(regexp, message.text) is not None
 
 
@@ -170,20 +170,28 @@ def lyricsearch(message):
 
 @bot.message_handler(func=_is_zodiac_command)
 def zodiac(message):
-    app.logger.debug("'zodiac' command detected")
-    _, date_str = message.text.split(' ')
-    _, month, day = _parse_date(date_str)
-    app.logger.debug('month = {}, day = {}'.format(month, day))
-    bot.reply_to(message, lookup_zodiac(month, day))
+    if message.text == '/zodiac':
+        prompt_str = 'Please input the date in yyyy-mm-dd format, e.g. 1998-05-02'
+        bot.reply_to(message, prompt_str)
+    else:
+        app.logger.debug("'zodiac' command detected")
+        _, date_str = message.text.split(' ')
+        _, month, day = _parse_date(date_str)
+        app.logger.debug('month = {}, day = {}'.format(month, day))
+        bot.reply_to(message, lookup_zodiac(month, day))
 
 
 @bot.message_handler(func=_is_shio_command)
 def shio(message):
-    app.logger.debug("'shio' command detected")
-    _, date_str = message.text.split(' ')
-    year, _, _ = _parse_date(date_str)
-    app.logger.debug('year = {}'.format(year))
-    bot.reply_to(message, lookup_chinese_zodiac(year))
+    if message.text == '/shio':
+        prompt_str = 'Please input the date in yyyy-mm-dd format, e.g. 1998-05-02'
+        bot.reply_to(message, prompt_str)
+    else:
+        app.logger.debug("'shio' command detected")
+        _, date_str = message.text.split(' ')
+        year, _, _ = _parse_date(date_str)
+        app.logger.debug('year = {}'.format(year))
+        bot.reply_to(message, lookup_chinese_zodiac(year))
 
 
 @bot.message_handler(commands=['plants'])

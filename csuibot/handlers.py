@@ -1,8 +1,10 @@
 import re
 
 from . import app, bot
+
 from .utils import lookup_zodiac, lookup_chinese_zodiac, draw_board, \
-    draw_empty_board, lookup_word
+    draw_empty_board, lookup_word, lookup_hex_to_rgb
+
 
 
 @bot.message_handler(commands=['about'])
@@ -81,6 +83,10 @@ def _is_synonym_command(message):
 
 def _is_antonym_command(message):
     regexp = r'/antonym \S+$'
+
+
+def _is_hextorgb_command(message):
+    regexp = r'/colour #......'
     return re.match(regexp, message.text) is not None
 
 
@@ -113,6 +119,14 @@ def board(message):
         _, game = msg_str
         app.logger.debug('game = {}'.format(game))
         bot.reply_to(message, draw_board(game))
+
+
+@bot.message_handler(func=_is_hextorgb_command)
+def hex2rgb(message):
+    app.logger.debug("'colour' command detected")
+    _, colour_value = message.text.split(' ')
+    app.logger.debug('colour = {}'.format(colour_value))
+    bot.reply_to(message, lookup_hex_to_rgb(colour_value))
 
 
 def _parse_date(text):

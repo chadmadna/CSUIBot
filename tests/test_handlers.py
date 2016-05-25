@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, compute, board, definition, synonym, antonym
 
+
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock()

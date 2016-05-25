@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, board, definition, synonym, antonym
-
+from csuibot.handlers import help, zodiac, shio, compute, board, definition, synonym, antonym
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -36,6 +35,16 @@ def test_shio(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_shio
+
+
+def test_compute1(mocker):
+    fake_compute1 = 'you think you can add banana+apple? not happening man.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute aa+bb')
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_compute1
 
 
 def test_board(mocker):

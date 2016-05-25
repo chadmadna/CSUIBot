@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, compute, board, definition, synonym, antonym
+from csuibot.handlers import help, zodiac, shio, yelfasilkom, compute, board, definition, synonym, antonym
 
 
 def test_help(mocker):
@@ -90,3 +90,28 @@ def test_antonym(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_antonym
+
+
+def test_yelfasilkom(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    expected_text = (
+        "Aba-aba pembuka: Fasilkom!!!\n"
+        "Fasilkom!*\n"
+        "Ilmu Komputer\n"
+        "Fasilkom!*\n"
+        "Satu Banding Seratus\n"
+        "Kami Elit, Kami Kompak, Kami Anak UI\n"
+        "MIPA Bukan, Teknik Bukan,\n"
+        "FE Apalagi*\n"
+        "Kami ini Fakultas No.1 di UI\n"
+        "Kami Cinta Fasilkom\n"
+        "Kami Bangga Fasilkom\n"
+        "Maju Terus\n"
+        "Fasilkom*\n\n"
+        "* : Diikuti dengan gerakan menghentakkan kaki\n"
+    )
+    assert args[1] == expected_text

@@ -11,31 +11,23 @@ def lookup_zodiac(month, day):
         z.Aquarius(),
         z.Gemini(),
         z.Cancer(),
-        z.Scorpio(),
-        z.Libra()
+        z.Scorpio()
     ]
 
     for zodiac in zodiacs:
         if zodiac.date_includes(month, day):
             return zodiac.name
-    else:
-        return 'Unknown zodiac'
 
 
 def lookup_chinese_zodiac(year):
     num_zodiacs = 12
-
     zodiacs = {
         0: 'rat',
-        1: 'buffalo',
-        2: 'tiger',
         4: 'dragon',
-        5: 'snake',
-        6: 'horse',
-        7: 'goat',
-        8: 'monkey'
-    }
+        5: 'snake'
+        }
     ix = (year - 4) % num_zodiacs
+
     try:
         return zodiacs[ix]
     except KeyError:

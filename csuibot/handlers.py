@@ -1,8 +1,48 @@
 import re
 
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, draw_board, \
-    draw_empty_board, lookup_word
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
+                    draw_empty_board, lookup_word, lookup_hex_to_rgb)
+
+
+def _is_zodiac_command(message):
+    regexp = r'/zodiac \d{4}\-\d{2}\-\d{2}'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_shio_command(message):
+    regexp = r'/shio \d{4}\-\d{2}\-\d{2}'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_compute_command(message):
+    regexp = r'/compute ...'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_board_command(message):
+    regexp = r'/board( [a-z]+)?'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_definition_command(message):
+    regexp = r'/definition \S+$'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_synonym_command(message):
+    regexp = r'/synonym \S+$'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_antonym_command(message):
+    regexp = r'/antonym \S+$'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_hextorgb_command(message):
+    regexp = r'/colour #......'
+    return re.match(regexp, message.text) is not None
 
 
 @bot.message_handler(commands=['about'])
@@ -37,21 +77,6 @@ def yelfasilkom(message):
     bot.reply_to(message, yelfslkm_text)
 
 
-def _is_zodiac_command(message):
-    regexp = r'/zodiac \d{4}\-\d{2}\-\d{2}'
-    return re.match(regexp, message.text) is not None
-
-
-def _is_shio_command(message):
-    regexp = r'/shio \d{4}\-\d{2}\-\d{2}'
-    return re.match(regexp, message.text) is not None
-
-
-def _is_compute_command(message):
-    regexp = r'/compute ...'
-    return re.match(regexp, message.text) is not None
-
-
 @bot.message_handler(func=_is_compute_command)
 def compute(message):
     app.logger.debug("'compute' command detected")
@@ -62,26 +87,6 @@ def compute(message):
         bot.reply_to(message, error)
     else:
         bot.reply_to(message, eval(exp))
-
-
-def _is_board_command(message):
-    regexp = r'/board( [a-z]+)?'
-    return re.match(regexp, message.text) is not None
-
-
-def _is_definition_command(message):
-    regexp = r'/definition \S+$'
-    return re.match(regexp, message.text) is not None
-
-
-def _is_synonym_command(message):
-    regexp = r'/synonym \S+$'
-    return re.match(regexp, message.text) is not None
-
-
-def _is_antonym_command(message):
-    regexp = r'/antonym \S+$'
-    return re.match(regexp, message.text) is not None
 
 
 @bot.message_handler(func=_is_zodiac_command)
@@ -115,8 +120,12 @@ def board(message):
         bot.reply_to(message, draw_board(game))
 
 
-def _parse_date(text):
-    return tuple(map(int, text.split('-')))
+@bot.message_handler(func=_is_hextorgb_command)
+def hex2rgb(message):
+    app.logger.debug("'colour' command detected")
+    _, colour_value = message.text.split(' ')
+    app.logger.debug('colour = {}'.format(colour_value))
+    bot.reply_to(message, lookup_hex_to_rgb(colour_value))
 
 
 @bot.message_handler(func=_is_definition_command)
@@ -147,3 +156,7 @@ def _parse_word(text):
     """Return first word if input contains multiple words."""
     ret = text[1:].split(' ')
     return ret[:2] if len(ret) > 2 else ret
+
+
+def _parse_date(text):
+    return tuple(map(int, text.split('-')))

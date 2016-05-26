@@ -1,8 +1,7 @@
 from unittest.mock import Mock
 
-
-from csuibot.handlers import help, zodiac, shio, yelfasilkom, compute, board, definition, synonym, antonym, hex2rgb
-
+from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
+                              board, definition, synonym, antonym)
 
 
 def test_help(mocker):
@@ -117,14 +116,3 @@ def test_yelfasilkom(mocker):
         "* : Diikuti dengan gerakan menghentakkan kaki\n"
     )
     assert args[1] == expected_text
-
-
-def test_hextorgb(mocker):
-    fake_rgb = 'foo bar'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_hex_to_rgb', return_value=fake_rgb)
-    mock_message = Mock(text='/colour #ffffff')
-    hex2rgb(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_rgb

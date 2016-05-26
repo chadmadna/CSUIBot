@@ -116,6 +116,17 @@ class TestZodiac:
         res = utils.lookup_zodiac(11, 27)
         assert res != 'scorpio'
 
+#    def test_libra_lower_bound(self):
+#        res = utils.lookup_zodiac(9, 23)
+#        assert res == 'libra'
+#
+#    def test_libra_upper_bound(self):
+#        res = utils.lookup_zodiac(10, 22)
+#        assert res == 'libra'
+#
+#    def test_libra_in_between(self):
+#        res = utils.lookup_zodiac(10, 10)
+#        assert res == 'libra'
 
     def test_not_libra(self):
         res = utils.lookup_zodiac(11, 17)
@@ -129,6 +140,9 @@ class TestChineseZodiac:
 
         assert all(res)
 
+#    def test_buffalo(self):
+#        years = [1997, 1985, 1973, 1961, 2009, 2021]
+#        self.run_test('buffalo', years)
 
     def test_rat(self):
         years = [1996, 1984, 1972, 1960, 2008, 2020]
@@ -142,6 +156,21 @@ class TestChineseZodiac:
         years = [2001, 1989, 1977, 1965, 2013, 2025]
         self.run_test('snake', years)
 
+#    def test_goat(self):
+#        years = [2003, 1991, 1979, 1967, 2015, 2027]
+#        self.run_test('goat', years)
+
+#    def test_monkey(self):
+#        years = [2004, 1992, 1980, 1968, 2016, 2028]
+#        self.run_test('monkey', years)
+#
+#    def test_horse(self):
+#        years = [2002, 1990, 1978, 1966, 2014, 2026]
+#        self.run_test('horse', years)
+#
+#    def test_tiger(self):
+#        years = [1998, 1986, 1974, 1962, 2010, 2022]
+#        self.run_test('tiger', years)
 
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]

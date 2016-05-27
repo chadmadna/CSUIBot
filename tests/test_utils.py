@@ -1,6 +1,7 @@
 from csuibot import utils
 from csuibot.utils import word
 from csuibot.utils import kbbi
+from csuibot.utils import sound
 import json
 
 
@@ -531,3 +532,42 @@ class TestVisualFeatures:
         response = (False, False)
 
         assert utils.v.ImgRequest(fake_file).is_adult == response
+
+
+class TestSound:
+
+    """
+    1. Mock self.client value to None, or omit the variable altogether
+    2. Run self.get_tracks() for self.trx where the return values are:
+       - A list containing an instance of the object FakeTracks
+       - An empty list to raise HTTPError
+    3. Unit tests to parse the tracks and duration are otherwise OK
+    """
+
+    class FakeTracks:
+        def __init__(self, title, duration, user, permalink_url):
+            self.title = title
+            self.duration = duration
+            self.user = user
+            self.permalink_url = permalink_url
+
+    def create_fake_init(self, action, keyword):
+        def fake_init(slf, action, keyword):
+            slf.action = action
+            slf.keyword = keyword
+            slf.trx = [TestSound.FakeTracks('Foo Bar', 1000, {'username': 'The Foo Bar Band'},
+                                            'http://www.google.com')]
+            slf.lookup = slf._parse_tracks()
+        return fake_init
+
+    def test_sound_composer(self, mocker):
+        mocker.patch.object(sound.Sound, '__init__',
+                            self.create_fake_init('sound_composer', 'foo bar'))
+        res = """TRACK NAME Foo Bar
+DURATION 00:01
+COMPOSER The Foo Bar Band
+URL http://www.google.com
+
+"""
+
+        assert utils.lookup_sound('sound_composer', 'foo bar') == res

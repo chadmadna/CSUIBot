@@ -7,7 +7,7 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
                     generate_chant, lyric_search, lookup_plants_trivia,
-                    lookup_definisi, get_visual_features)
+                    lookup_definisi, get_visual_features, lookup_sound)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -61,6 +61,11 @@ def _lyric_search_command(message):
 def _is_visual_features_command(message):
     attrs = hasattr(message, 'photo') and hasattr(message, 'caption')
     return attrs and message.caption == '/analyse_picture'
+
+
+def _is_sound_composer_command(message):
+    regexp = r'/sound_composer \S+$'
+    return re.match(regexp, message.text) is not None
 
 
 @bot.message_handler(commands=['about'])
@@ -268,6 +273,14 @@ def antonym(message):
     action_str, word_str = _parse_word(message.text)
     app.logger.debug('action = {}, word = {}'.format(action_str, word_str))
     bot.reply_to(message, lookup_word(action_str, word_str))
+
+
+@bot.message_handler(func=_is_sound_composer_command)
+def sound_composer(message):
+    app.logger.debug("'sound_composer' command detected")
+    action_str, keyword_str = _parse_word(message.text)
+    app.logger.debug('action = {}, keyword = {}'.format(action_str, keyword_str))
+    bot.reply_to(message, lookup_sound(action_str, keyword_str))
 
 
 def _parse_word(text):

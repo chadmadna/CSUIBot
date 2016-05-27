@@ -4,6 +4,7 @@ from csuibot.utils import boardgame as b
 from csuibot.utils import word as w
 from csuibot.utils import plants as p
 from csuibot.utils import visualfeatures as v
+from csuibot.utils import sound as s
 from csuibot import app
 import requests
 
@@ -90,6 +91,10 @@ def lookup_word(action, word):
     for search in searches:
         if search.name == action:
             return search.find
+
+
+def lookup_sound(action, keyword):
+    return s.Sound(action, keyword).lookup
 
 
 def lookup_hex_to_rgb(value):

@@ -195,7 +195,6 @@ class TestZodiac:
 
 
 class TestChineseZodiac:
-
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]
 
@@ -239,7 +238,6 @@ class TestChineseZodiac:
 
 
 class TestBoardGame:
-
     def test_empty_board(self):
         res = ("\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\n"
                "\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\u2b1b\u2b1c\n") * 4
@@ -284,12 +282,12 @@ class TestBoardGame:
 
 
 class TestWord:
-
     def create_fake_init(self, name, mean=None):
         def fake_init(slf, word):
             slf.name = name
             slf.mean = mean
             slf.find = slf.lookup()
+
         return fake_init
 
     def test_definition(self, mocker):
@@ -394,3 +392,142 @@ class TestDefinisi:
         mocker.patch("csuibot.utils.kbbi.requests.get", return_value=FakeResponse())
         assert kbbi.WordDefinition('test').url_data() == expected
         assert utils.lookup_definisi('test') == 'test' + '\n' + expected
+
+
+class TestVisualFeatures:
+    @staticmethod
+    def create_fake_features():
+        def fake_features(slf):
+            slf._categories = "Foo > Bar"
+            slf._tags = "foo, bar, baz"
+            slf._description = "A foo borking a bar"
+            slf._faces = [
+                {'gender': 'foo', 'age': 20},
+                {'gender': 'bar', 'age': 25},
+            ]
+            slf._image_type = 'Clipart'
+            slf._color = {'dominant': ['Foo'], 'fg': 'Bar',
+                          'bg': 'Baz', 'accent': '666666',
+                          'is_bw': False}
+            slf._is_adult = (False, False)
+
+        return fake_features
+
+    @staticmethod
+    def create_fake_init_feature(data, attr):
+        def fake_feature(slf, imginfo):
+            slf._data = data
+            setattr(slf, attr, getattr(slf, '_fetch{}'.format(attr))())
+
+        return fake_feature
+
+    def test_get_visual_features(self, mocker):
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch('csuibot.utils.visualfeatures.requests')
+        mocker.patch('csuibot.utils.visualfeatures.json.loads')
+        mocker.patch.object(utils.v.ImgRequest, 'init_features', self.create_fake_features())
+        response = 'A foo borking a bar.\n\nCategories: Foo > Bar\nTags: foo, bar, baz' \
+                   '\nFaces: 2 face(s) identified:\n- foo, 20 years old\n- bar, 25 ' \
+                   'years old\nImage type: Clipart\nColor profile: \n- Dominant color: ' \
+                   'Foo\n  * Foreground color: Bar\n  * Background color: Baz\n- ' \
+                   'Accent color: #666666\n- Is a B/W image: False\nIs adult content: ' \
+                   'False\nIs racy content: False'
+
+        assert utils.get_visual_features(fake_file) == response
+
+    def test_fetch_categories(self, mocker):
+        fake_data = {'categories': [
+            {'score': 0.3515625, 'name': 'people_'},
+            {'score': 0.64453125, 'name': 'people_show'}
+        ]}
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_categories'))
+        response = 'People > Show'
+
+        assert utils.v.ImgRequest(fake_file).categories == response
+
+    def test_fetch_tags(self, mocker):
+        fake_data = {'tags': [
+            {'confidence': 0.9515625, 'name': 'show'},
+            {'confidence': 0.9445312, 'name': 'concert'},
+            {'confidence': 0.9198734, 'name': 'television'},
+            {'confidence': 0.8902537, 'name': 'woman'},
+            {'confidence': 0.8502343, 'name': 'music'},
+            {'confidence': 0.8392349, 'name': 'guitar'}
+        ]}
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_tags'))
+        response = 'show, concert, television, woman, music'
+
+        assert utils.v.ImgRequest(fake_file).tags == response
+
+    def test_fetch_description(self, mocker):
+        fake_data = {
+            'description': {
+                'captions': [
+                    {'confidence': 0.714, 'text': 'a foo borking a bar'},
+                    {'confidence': 0.946, 'text': 'a foobar borking into '
+                                                  'MAXIMUM BORKDRIVE'},
+                    ]
+                }
+        }
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_description'))
+        response = 'A foobar borking into MAXIMUM BORKDRIVE'
+
+        assert utils.v.ImgRequest(fake_file).description == response
+
+    def test_fetch_faces(self, mocker):
+        fake_data = {'faces': [
+            {'gender': 'Betina', 'age': 60},
+            {'gender': 'Pejantan', 'age': 35}
+        ]}
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_faces'))
+        response = [{'gender': 'Betina', 'age': 60},
+                    {'gender': 'Pejantan', 'age': 35}]
+
+        assert utils.v.ImgRequest(fake_file).faces == response
+
+    def test_fetch_image_type(self, mocker):
+        fake_data = {'imageType': {'lineDrawingType': 0, 'clipArtType': 2}}
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_image_type'))
+        response = 'Clipart'
+
+        assert utils.v.ImgRequest(fake_file).image_type == response
+
+    def test_fetch_color(self, mocker):
+        fake_data = {'color': {
+            'accentColor': '671188',
+            'dominantColorBackground': 'Black',
+            'dominantColorForeground': 'Red',
+            'dominantColors': ['Black', 'Purple'],
+            'isBWImg': False
+        }}
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_color'))
+        response = {'bg': 'Black', 'fg': 'Red', 'dominant': ['Black', 'Purple'],
+                    'accent': '671188', 'is_bw': False}
+
+        assert utils.v.ImgRequest(fake_file).color == response
+
+    def test_fetch_is_adult(self, mocker):
+        fake_data = {'adult': {
+            'racyScore': 0.04737820103764534,
+            'isRacyContent': False,
+            'adultScore': 0.04082706198096275,
+            'isAdultContent': False
+        }}
+        fake_file = mocker.Mock(spec=['file_path'])
+        mocker.patch.object(utils.v.ImgRequest, '__init__',
+                            self.create_fake_init_feature(fake_data, '_is_adult'))
+        response = (False, False)
+
+        assert utils.v.ImgRequest(fake_file).is_adult == response

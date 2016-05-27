@@ -1,10 +1,11 @@
+from datetime import datetime
 from unittest.mock import Mock
+# from telebot.types import Message, File
 from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               board, definition, synonym, antonym, hex2rgb,
                               date, time, chant, top_posters, get_messages,
                               message_dic, total_messages, lyricsearch,
-                              plants, definisi)
-from datetime import datetime
+                              plants, definisi, visual_features)
 
 
 def test_help(mocker):
@@ -290,3 +291,17 @@ def test_definisi(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_word
+
+
+def test_visual_features(mocker):
+    fake_visual_features = 'kepo ih'
+    mock_message = Mock(spec=['photo'])
+    mock_imginfo = Mock(spec=['file_id', 'file_path', 'file_size'])
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_visual_features', return_value=fake_visual_features)
+    mocker.patch('csuibot.handlers.sorted', return_value=[mock_imginfo])
+    mocker.patch('csuibot.handlers.bot.get_file', return_value=mock_imginfo)
+    visual_features(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_visual_features

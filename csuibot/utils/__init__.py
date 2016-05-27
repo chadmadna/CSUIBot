@@ -3,6 +3,7 @@ from csuibot.utils import kbbi as k
 from csuibot.utils import boardgame as b
 from csuibot.utils import word as w
 from csuibot.utils import plants as p
+from csuibot.utils import visualfeatures as v
 from csuibot import app
 import requests
 
@@ -110,3 +111,44 @@ def lookup_plants_trivia(plants_facts=None):
 def lookup_definisi(text):
     definisi = k.WordDefinition(text).definition()
     return text + '\n' + definisi
+
+
+def lookup_visual_features(imgfile):
+    pass
+
+
+def get_visual_features(imginfo):
+    img = v.ImgRequest(imginfo)
+    paragraph = "{}.\n\n" \
+                "Categories: {}\n" \
+                "Tags: {}\n" \
+                "Faces: {}\n" \
+                "Image type: {}\n" \
+                "Color profile: {}\n" \
+                "Is adult content: {}\n" \
+                "Is racy content: {}"
+
+    face_txt = "{}, {} years old"
+    facelist = [face_txt.format(face['gender'], face['age']) for face in img.faces]
+    newline = "\n- " if facelist else ""
+    faces = "{} face(s) identified:{}{}".format(len(img.faces), newline,
+                                                "\n- ".join(facelist))
+
+    color = "\n- Dominant color: {}" \
+            "\n  * Foreground color: {}" \
+            "\n  * Background color: {}" \
+            "\n- Accent color: #{}" \
+            "\n- Is a B/W image: {}"\
+        .format(", ".join(img.color['dominant']),
+                img.color['fg'],
+                img.color['bg'],
+                img.color['accent'],
+                img.color['is_bw']
+                )
+
+    paragraph = paragraph.format(img.description, img.categories,
+                                 img.tags, faces, img.image_type,
+                                 color, img.is_adult[0],
+                                 img.is_adult[1])
+
+    return paragraph

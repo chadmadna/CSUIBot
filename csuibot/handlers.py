@@ -7,7 +7,7 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
                     generate_chant, lyric_search, lookup_plants_trivia,
-                    lookup_definisi)
+                    lookup_definisi, get_visual_features)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -56,6 +56,11 @@ def _is_hextorgb_command(message):
 def _lyric_search_command(message):
     regexp = r'/lyricsearch \w+'
     return re.match(regexp, message.text) is not None
+
+
+def _is_visual_features_command(message):
+    attrs = hasattr(message, 'photo') and hasattr(message, 'caption')
+    return attrs and message.caption == '/analyse_picture'
 
 
 @bot.message_handler(commands=['about'])
@@ -301,3 +306,17 @@ def _parse_date(text):
 def chant(message):
     app.logger.debug("'chant' command detected")
     bot.reply_to(message, generate_chant())
+
+
+@bot.message_handler(content_types=['photo'], func=_is_visual_features_command)
+def visual_features(message):
+    app.logger.debug("'visual_features' command detected")
+    imginfo = _get_file_info(message)
+    app.logger.debug('file_size = {}, file_path = {}'.format(
+        imginfo.file_size, imginfo.file_path))
+    bot.reply_to(message, get_visual_features(imginfo))
+
+
+def _get_file_info(message):
+    photo = sorted(message.photo, key=lambda x: x.file_size)[-1]  # find largest photo
+    return bot.get_file(photo.file_id)

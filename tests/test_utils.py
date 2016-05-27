@@ -571,3 +571,15 @@ URL http://www.google.com
 """
 
         assert utils.lookup_sound('sound_composer', 'foo bar') == res
+
+    def test_sound_search(self, mocker):
+        mocker.patch.object(sound.Sound, '__init__',
+                            self.create_fake_init('sound_search', 'foo bar'))
+        res = """TRACK NAME Foo Bar
+DURATION 00:01
+COMPOSER The Foo Bar Band
+URL http://www.google.com
+
+"""
+
+        assert utils.lookup_sound('sound_search', 'foo bar') == res

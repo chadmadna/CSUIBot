@@ -5,7 +5,7 @@ from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               board, definition, synonym, antonym, hex2rgb,
                               date, time, chant, top_posters, get_messages,
                               message_dic, total_messages, lyricsearch,
-                              plants, definisi, visual_features,
+                              plants, definisi, visual_features, sound_search,
                               sound_composer)
 
 
@@ -317,3 +317,14 @@ def test_sound_composer(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_sound_composer
+
+
+def test_sound_search(mocker):
+    fake_sound_search = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_sound', return_value=fake_sound_search)
+    mock_message = Mock(text='/sound_search dangdut koplo')
+    sound_search(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_sound_search

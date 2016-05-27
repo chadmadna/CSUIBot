@@ -68,6 +68,11 @@ def _is_sound_composer_command(message):
     return re.match(regexp, message.text) is not None
 
 
+def _is_sound_search_command(message):
+    regexp = r'/sound_search ([\w ]+)'
+    return re.match(regexp, message.text) is not None
+
+
 @bot.message_handler(commands=['about'])
 def help(message):
     app.logger.debug("'about' command detected")
@@ -273,6 +278,14 @@ def antonym(message):
     action_str, word_str = _parse_word(message.text)
     app.logger.debug('action = {}, word = {}'.format(action_str, word_str))
     bot.reply_to(message, lookup_word(action_str, word_str))
+
+
+@bot.message_handler(func=_is_sound_search_command)
+def sound_search(message):
+    app.logger.debug("'sound_search' command detected")
+    action_str, keyword_str = _parse_word(message.text)
+    app.logger.debug('action = {}, keyword = {}'.format(action_str, keyword_str))
+    bot.reply_to(message, lookup_sound(action_str, keyword_str))
 
 
 @bot.message_handler(func=_is_sound_composer_command)

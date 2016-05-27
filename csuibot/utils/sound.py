@@ -17,9 +17,11 @@ class Sound:
             self.lookup = "Tracks not found"
 
     def get_tracks(self, act, key):
-        if act == 'sound_composer':
-            user = self.client.get('/resolve', url='http://soundcloud.com/{}'.format(key))
-            tracks = self.client.get('/users/{}/tracks'.format(user.id), limit=5)
+        if act == 'sound_search':
+            tracks = self.client.get('/tracks', q='{}'.format(key), limit=5)
+
+        if len(tracks) == 0:
+            raise HTTPError
         return tracks
 
     def _parse_tracks(self):

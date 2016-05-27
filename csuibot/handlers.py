@@ -7,7 +7,8 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
                     generate_chant, lyric_search, lookup_plants_trivia,
-                    lookup_definisi, get_visual_features, lookup_sound)
+                    lookup_definisi, get_visual_features, lookup_sound,
+                    search_news, process_search)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -70,6 +71,16 @@ def _is_sound_composer_command(message):
 
 def _is_sound_search_command(message):
     regexp = r'/sound_search ([\w ]+)'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_get_news_help_command(message):
+    regexp = r'/news_help'
+    return re.match(regexp, message.text) is not None
+
+
+def _is_get_news_command(message):
+    regexp = r'/news \w.+'
     return re.match(regexp, message.text) is not None
 
 
@@ -346,3 +357,26 @@ def visual_features(message):
 def _get_file_info(message):
     photo = sorted(message.photo, key=lambda x: x.file_size)[-1]  # find largest photo
     return bot.get_file(photo.file_id)
+
+
+@bot.message_handler(func=_is_get_news_help_command)
+def get_news_help(message):
+    app.logger.debug("'News Help' command detected")
+    about_text = (
+        'News Bot\n\n'
+        'Run this bot to get 5 latest news '
+        'of the given keyword.\n'
+        'Start by typing /news continued with'
+        'news keyword.\n'
+        'Bot will reply 5 latest news regarding'
+        'given keyword.\n'
+    )
+    bot.reply_to(message, about_text)
+
+
+@bot.message_handler(func=_is_get_news_command)
+def get_news(message):
+    app.logger.debug("'News' command detected")
+    query = message.text.split(' ')[1:]
+    resp = search_news(query)
+    bot.reply_to(message, process_search(resp))

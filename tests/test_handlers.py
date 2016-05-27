@@ -6,7 +6,7 @@ from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               date, time, chant, top_posters, get_messages,
                               message_dic, total_messages, lyricsearch,
                               plants, definisi, visual_features, sound_search,
-                              sound_composer)
+                              sound_composer, get_news_help, get_news)
 
 
 def test_help(mocker):
@@ -328,3 +328,35 @@ def test_sound_search(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_sound_search
+
+
+def test_get_news_help(mocker):
+    # Idea: Test result of call
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+    get_news_help(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    expected_text = (
+        'News Bot\n\n'
+        'Run this bot to get 5 latest news '
+        'of the given keyword.\n'
+        'Start by typing /news continued with'
+        'news keyword.\n'
+        'Bot will reply 5 latest news regarding'
+        'given keyword.\n'
+    )
+    assert args[1] == expected_text
+
+
+def test_get_news(mocker):
+    # Idea: Simulate news calling
+    fake_news = {"value": {"name": "Lorem Ipsum", "description": "LOL GET REKT",
+                                   "url": "https://abc.xyz"}}
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.process_search', return_value=fake_news)
+    mock_message = Mock(text='/news test')
+    get_news(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_news

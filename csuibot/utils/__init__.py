@@ -5,6 +5,7 @@ from csuibot.utils import word as w
 from csuibot.utils import plants as p
 from csuibot.utils import visualfeatures as v
 from csuibot.utils import sound as s
+from csuibot.utils import cognitive_news as news
 from csuibot import app
 import requests
 
@@ -157,3 +158,16 @@ def get_visual_features(imginfo):
                                  img.is_adult[1])
 
     return paragraph
+
+
+def search_news(query):
+    return news.search_news(query)
+
+
+def process_search(response):
+    news_list = response["value"]
+    message = ""
+    for i in news_list:
+        message += i["name"] + "\n\n" + i["description"] + "\n\n"
+        message += "Read more here: " + i["url"] + "\n\n"
+    return message

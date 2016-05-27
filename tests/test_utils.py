@@ -1,3 +1,4 @@
+from unittest.mock import MagicMock
 from csuibot import utils
 from csuibot.utils import word
 from csuibot.utils import kbbi
@@ -583,3 +584,11 @@ URL http://www.google.com
 """
 
         assert utils.lookup_sound('sound_search', 'foo bar') == res
+
+
+class TestCognitiveNews:
+    def test_search(self):
+        fake_dict = {"fake_key": "fake_value"}
+        res = MagicMock(utils.search_news("Lorem Ipsum"), return_value=fake_dict)
+        res("Lorem Ipsum")
+        res.assert_called_with("Lorem Ipsum")

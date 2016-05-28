@@ -2,7 +2,8 @@ import re
 
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
-                    draw_empty_board, lookup_word, lookup_hex_to_rgb)
+                    draw_empty_board, lookup_word, lookup_hex_to_rgb,
+                    generate_chant)
 
 
 def _is_zodiac_command(message):

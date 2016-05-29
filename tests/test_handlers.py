@@ -3,7 +3,7 @@ from csuibot.handlers import (help, zodiac, shio, yelfasilkom, compute,
                               board, definition, synonym, antonym, hex2rgb,
                               date, time, chant, top_posters, get_messages,
                               message_dic, total_messages, lyricsearch,
-                              plants)
+                              plants, definisi)
 from datetime import datetime
 
 
@@ -279,3 +279,14 @@ def test_plants(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_trivia
+
+
+def test_definisi(mocker):
+    fake_word = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_definisi', return_value=fake_word)
+    mock_message = Mock(text='/definisi test')
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_word

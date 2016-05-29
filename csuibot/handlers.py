@@ -6,7 +6,8 @@ from collections import defaultdict
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, draw_board,
                     draw_empty_board, lookup_word, lookup_hex_to_rgb,
-                    generate_chant, lyric_search, lookup_plants_trivia)
+                    generate_chant, lyric_search, lookup_plants_trivia,
+                    lookup_definisi)
 
 message_dic = defaultdict(dict)
 total_messages = defaultdict(int)
@@ -111,6 +112,11 @@ def _is_chant_command(message):
     return re.match(regexp, message.text) is not None
 
 
+def _is_definisi_command(message):
+    regexp = r'/definisi \S+$'
+    return re.match(regexp, message.text) is not None
+
+
 def get_current_date():
     return datetime.now()
 
@@ -199,6 +205,15 @@ def shio(message):
         bot.reply_to(message, lookup_chinese_zodiac(year))
 
 
+@bot.message_handler(func=_is_definisi_command)
+def definisi(message):
+    app.logger.debug("'definisi' command detected")
+    word_list = message.text.split(' ')
+    word = _parse_search_term(word_list)
+    app.logger.debug('article = {}'.format(word))
+    bot.reply_to(message, lookup_definisi(word))
+
+
 @bot.message_handler(commands=['plants'])
 def plants(message):
     app.logger.debug("'plants' command detected")
@@ -270,6 +285,12 @@ def get_messages(message):
         except KeyError:
             message_dic[chat_id][name] = 1
         total_messages[chat_id] += 1
+
+
+def _parse_search_term(text):
+    ret = text[1:]
+    parse_word = " ".join(ret)
+    return parse_word
 
 
 def _parse_date(text):

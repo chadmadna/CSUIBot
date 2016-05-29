@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import kbbi as k
 from csuibot.utils import boardgame as b
 from csuibot.utils import word as w
 from csuibot.utils import plants as p
@@ -104,3 +105,8 @@ def generate_chant():
 def lookup_plants_trivia(plants_facts=None):
     result = p.Plants(plants_facts)
     return result.facts()
+
+
+def lookup_definisi(text):
+    definisi = k.WordDefinition(text).definition()
+    return text + '\n' + definisi

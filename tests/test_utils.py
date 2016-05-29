@@ -1,5 +1,7 @@
 from csuibot import utils
 from csuibot.utils import word
+from csuibot.utils import kbbi
+import json
 
 
 class TestLyricSearch:
@@ -356,3 +358,39 @@ class TestPlants:
             'r', encoding='utf-8-sig').readlines()
         compare = [lines.strip() for lines in compare]
         assert res in compare
+
+
+class TestDefinisi:
+
+    def test_url_data(self, mocker):
+        fake_json = dict(foo='bar')
+
+        class FakeResponse:
+
+            def json(self):
+                return fake_json
+
+        mocker.patch("csuibot.utils.kbbi.requests.get", return_value=FakeResponse())
+        assert kbbi.WordDefinition('test').url_data() == fake_json
+
+    def test_definition(self, mocker):
+        fake_data = {'kateglo': {'definition': [{'def_text': 'foo'}]}}
+        fake_text = "(1)foo"
+        mocker.patch("csuibot.utils.kbbi.WordDefinition.url_data", return_value=fake_data)
+        assert kbbi.WordDefinition('test').definition() == fake_text
+
+    def test_definisi_output(self, mocker):
+        fake_data = {'kateglo': {'definition': [{'def_text': 'foo'}]}}
+        fake_text = "test" + "\n" + "(1)foo"
+        mocker.patch("csuibot.utils.kbbi.WordDefinition.url_data", return_value=fake_data)
+        assert utils.lookup_definisi('test') == fake_text
+
+    def test_wrong_word(self, mocker):
+        class FakeResponse:
+            def json(self):
+                raise json.decoder.JSONDecodeError('msg', 'doc', 123)
+
+        expected = 'Oooopss, It looks like you type the wrong word!'
+        mocker.patch("csuibot.utils.kbbi.requests.get", return_value=FakeResponse())
+        assert kbbi.WordDefinition('test').url_data() == expected
+        assert utils.lookup_definisi('test') == 'test' + '\n' + expected

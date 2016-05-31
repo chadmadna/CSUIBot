@@ -92,13 +92,18 @@ def yelfasilkom(message):
 @bot.message_handler(func=_is_compute_command)
 def compute(message):
     app.logger.debug("'compute' command detected")
-    exp = message.text
-    exp = exp[8:]
-    error = 'you think you can add banana+apple? not happening man.'
-    if re.search('[a-zA-Z]', exp):
-        bot.reply_to(message, error)
+    n = len('/compute ')
+    exp = message.text[n:]
+    error_msg = 'you think you can add banana+apple? not happening man.'
+    if re.search('[^0-9\+\-\*/]', exp):
+        bot.reply_to(message, error_msg)
     else:
-        bot.reply_to(message, eval(exp))
+        try:
+            result = eval(exp)
+        except:  # catch any exception
+            bot.reply_to(message, error_msg)
+        else:
+            bot.reply_to(message, result)
 
 
 def _is_chant_command(message):

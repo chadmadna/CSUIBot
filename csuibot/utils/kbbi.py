@@ -16,7 +16,7 @@ class WordDefinition:
         try:
             self.json_data = r.json()
             return self.json_data
-        except json.JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return 'Oooopss, It looks like you type the wrong word!'
 
     @staticmethod
